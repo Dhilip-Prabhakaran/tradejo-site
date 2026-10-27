@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TradeJo · Trade by the rules</title>
+  <meta name="description" content="TradeJo is your own trade analytics app: it checks every trade against your rules, journals it from your broker automatically, and shows what discipline earns you." />
+  <meta property="og:title" content="TradeJo · Trade by the rules" />
+  <meta property="og:description" content="Your rules, checked before every trade. Your journal, written for you. Your discipline, measured." />
+  <meta property="og:url" content="https://tradejo.in/" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#f6f2e2" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-a: #f2f2ee; --bg-b: #f6f2e2; --bg-c: #f8ebb0;
+      --panel: rgba(255, 255, 255, 0.72); --panel-solid: #fff; --glass: rgba(255, 255, 255, 0.85);
+      --ink: #1d1d1b; --ink-2: #44443f; --muted: #6f6e67; --line: rgba(29, 29, 27, 0.09);
+      --dark: #262624; --yellow: #f5d04c; --yellow-soft: #fcf3cf; --pill: #e9e8e2;
+      --pos: #2f9a68; --neg: #d4473f; --ok-bg: #e5f4ec; --bad-bg: #fbe7e4; --warn-bg: #fdf3cc; --warn-ink: #7a5a00;
+      --violet: #7a6cd9; --violet-bg: #eeebfb;
+      --lm-1: #e11d48; --lm-2: #f59e0b; --lm-3: #059669; --lm-4: #2563eb;
+      --shadow: 0 1px 2px rgba(29, 29, 27, 0.04), 0 16px 40px rgba(29, 29, 27, 0.08);
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--ink); font: 400 17px/1.6 "Outfit", "Segoe UI", system-ui, sans-serif;
+      background: radial-gradient(1200px 600px at 85% -10%, var(--bg-c), transparent 60%),
+                  linear-gradient(180deg, var(--bg-b), var(--bg-a) 55%);
+      background-color: var(--bg-a); min-height: 100vh;
+    }
+    h1, h2, h3 { font-family: "Plus Jakarta Sans", "Outfit", system-ui, sans-serif; letter-spacing: -0.03em; line-height: 1.1; margin: 0; }
+    a { color: inherit; }
+    .wrap { width: min(1160px, 100% - 32px); margin: 0 auto; }
+
+    /* nav */
+    .nav { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(14px); background: rgba(246, 242, 226, 0.7); border-bottom: 1px solid var(--line); }
+    .nav .wrap { display: flex; align-items: center; gap: 24px; height: 68px; }
+    .brand { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+    .brand-name { font: 800 22px/1 "Plus Jakarta Sans", sans-serif; letter-spacing: -0.6px; }
+    .bn-j { color: var(--lm-2); } .bn-o { color: var(--lm-3); }
+    .logo-candle { transform-box: fill-box; transform-origin: bottom; transition: transform 0.35s cubic-bezier(0.3, 1.5, 0.5, 1); }
+    .brand:hover .logo-candle:nth-child(1) { transform: translateY(-2px); }
+    .brand:hover .logo-candle:nth-child(2) { transform: translateY(-3px); transition-delay: 0.04s; }
+    .brand:hover .logo-candle:nth-child(3) { transform: translateY(-4px); transition-delay: 0.08s; }
+    .brand:hover .logo-candle:nth-child(4) { transform: translateY(-5px); transition-delay: 0.12s; }
+    .nav-links { display: flex; gap: 22px; margin-left: auto; font-weight: 500; }
+    .nav-links a { text-decoration: none; color: var(--ink-2); }
+    .nav-links a:hover { color: var(--ink); }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 999px; font-weight: 600; text-decoration: none; border: 1.5px solid transparent; transition: transform 0.15s, box-shadow 0.15s; white-space: nowrap; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-dark { background: var(--dark); color: #fff; box-shadow: 0 8px 22px rgba(29, 29, 27, 0.18); }
+    .btn-line { border-color: rgba(29, 29, 27, 0.35); color: var(--ink); }
+    .btn-sm { padding: 9px 18px; font-size: 15px; }
+
+    /* hero */
+    .hero { padding: 72px 0 110px; }
+    .hero .wrap { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: var(--yellow-soft); border: 1px solid #f1df92; font-size: 14px; font-weight: 600; color: var(--warn-ink); }
+    .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--lm-3); box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.18); }
+    .hero h1 { font-size: clamp(42px, 6vw, 72px); font-weight: 800; margin: 20px 0 18px; }
+    .hero h1 .hl { background: linear-gradient(transparent 62%, var(--yellow) 62% 92%, transparent 92%); }
+    .lead { font-size: 20px; color: var(--ink-2); max-width: 34em; margin: 0 0 30px; }
+    .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+    .fine { margin-top: 16px; font-size: 14px; color: var(--muted); }
+
+    /* the app, drawn */
+    .mock { position: relative; }
+    .card { background: rgba(255, 255, 255, 0.82); border: 1px solid var(--glass); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .ticket { padding: 20px; }
+    .t-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .t-head b { font: 700 18px/1.2 "Plus Jakarta Sans", sans-serif; }
+    .t-head small { display: block; color: var(--muted); font-size: 13px; }
+    .t-ltp { text-align: right; } .t-ltp span { display: block; font-size: 11px; letter-spacing: 0.06em; color: var(--muted); }
+    .t-ltp strong { font: 700 26px/1.1 "Plus Jakarta Sans", sans-serif; font-variant-numeric: tabular-nums; }
+    .t-side { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; background: var(--pill); border-radius: 12px; margin: 16px 0 14px; font-weight: 600; text-align: center; }
+    .t-side span { padding: 8px; border-radius: 9px; color: var(--muted); }
+    .t-side .on { background: var(--pos); color: #fff; }
+    .t-rules { padding: 12px; border-radius: 14px; background: var(--bad-bg); border-left: 4px solid var(--neg); display: grid; gap: 6px; }
+    .t-rules .cap { font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--neg); }
+    .rule { background: #fff; border-radius: 9px; padding: 7px 10px; font-size: 14px; }
+    .rule.block { color: var(--neg); font-weight: 600; } .rule.warn { color: var(--warn-ink); }
+    .t-go { margin-top: 14px; padding: 13px; border-radius: 12px; background: var(--pos); color: #fff; font-weight: 700; text-align: center; opacity: 0.45; }
+    .float { position: absolute; padding: 14px 16px; }
+    .score { right: -6px; top: -62px; display: flex; align-items: center; gap: 12px; }
+    .ring { width: 54px; height: 54px; border-radius: 50%; background: conic-gradient(var(--pos) 0 86%, var(--pill) 86% 100%); display: grid; place-items: center; }
+    .ring::after { content: "86%"; width: 42px; height: 42px; border-radius: 50%; background: #fff; display: grid; place-items: center; font: 700 13px "Plus Jakarta Sans", sans-serif; }
+    .score small { display: block; color: var(--muted); font-size: 12px; } .score b { font-size: 15px; }
+    .journal { left: -26px; bottom: -92px; width: 250px; font-size: 13.5px; }
+    .journal .row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed var(--line); }
+    .journal .row:last-child { border: 0; }
+    .tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+    .tag.ok { background: var(--ok-bg); color: var(--pos); } .tag.bad { background: var(--bad-bg); color: var(--neg); }
+    .illus { position: absolute; right: 8px; bottom: -40px; font-size: 12px; color: var(--muted); }
+
+    /* sections */
+    section { padding: 72px 0; }
+    .sec-head { max-width: 680px; margin-bottom: 40px; }
+    .kicker { font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lm-2); margin-bottom: 10px; }
+    .sec-head h2 { font-size: clamp(30px, 4vw, 44px); font-weight: 800; }
+    .sec-head p { color: var(--ink-2); font-size: 18px; margin: 14px 0 0; }
+
+    .pains { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .pain { padding: 24px; }
+    .pain .q { font: 700 20px/1.3 "Plus Jakarta Sans", sans-serif; margin-bottom: 8px; }
+    .pain p { margin: 0; color: var(--ink-2); }
+    .pain .emo { font-size: 26px; }
+
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .feat { padding: 26px; transition: transform 0.2s, box-shadow 0.2s; }
+    .feat:hover { transform: translateY(-3px); box-shadow: 0 1px 2px rgba(29, 29, 27, 0.05), 0 22px 48px rgba(29, 29, 27, 0.1); }
+    .ico { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-size: 22px; margin-bottom: 16px; }
+    .feat h3 { font-size: 20px; margin-bottom: 8px; }
+    .feat p { margin: 0; color: var(--ink-2); font-size: 16px; }
+
+    .split { display: grid; grid-template-columns: 1fr 1.1fr; gap: 48px; align-items: center; }
+    .steps { display: grid; gap: 14px; counter-reset: s; }
+    .step { display: flex; gap: 16px; padding: 18px 20px; align-items: flex-start; }
+    .step::before { counter-increment: s; content: counter(s); flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--dark); color: #fff; display: grid; place-items: center; font: 700 15px "Plus Jakarta Sans", sans-serif; }
+    .step b { display: block; font-size: 18px; } .step span { color: var(--ink-2); }
+
+    .chart { padding: 24px; }
+    .chart h3 { font-size: 18px; } .chart .sub { color: var(--muted); font-size: 14px; margin: 4px 0 18px; }
+    .bars { display: grid; gap: 14px; }
+    .bar-row { display: grid; grid-template-columns: 130px 1fr 90px; gap: 12px; align-items: center; font-size: 15px; }
+    .bar { height: 14px; border-radius: 999px; background: var(--pill); position: relative; overflow: hidden; }
+    .bar i { position: absolute; inset: 0 auto 0 0; border-radius: inherit; }
+    .num { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .pos { color: var(--pos); } .neg { color: var(--neg); }
+    .note { margin-top: 18px; padding: 12px 14px; border-radius: 12px; background: var(--yellow-soft); font-size: 15px; }
+
+    .final { text-align: center; padding: 56px 24px; background: var(--dark); color: #fff; border-radius: 28px; position: relative; overflow: hidden; }
+    .final::before { content: ""; position: absolute; inset: -40% -10% auto auto; width: 420px; height: 420px; border-radius: 50%; background: radial-gradient(circle, rgba(245, 208, 76, 0.35), transparent 65%); }
+    .final h2 { font-size: clamp(30px, 4.4vw, 48px); position: relative; }
+    .final p { color: #d8d6cc; font-size: 18px; max-width: 34em; margin: 14px auto 28px; position: relative; }
+    .final .btn { background: var(--yellow); color: var(--ink); position: relative; }
+
+    footer { padding: 40px 0 48px; color: var(--muted); font-size: 14px; }
+    footer .wrap { display: grid; gap: 18px; }
+    .foot-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .disclaimer { padding: 16px 18px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.5); line-height: 1.55; }
+
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } html { scroll-behavior: auto; } }
+
+    @media (max-width: 920px) {
+      .hero .wrap, .split { grid-template-columns: 1fr; }
+      .hero { padding-top: 40px; }
+      .mock { margin: 70px 10px 60px; }
+      .pains, .features { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+      .nav .btn { margin-left: auto; }
+    }
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      .pains, .features { grid-template-columns: 1fr; }
+      .score { right: -4px; top: -58px; padding: 10px 12px; }
+      .journal { position: relative; left: auto; bottom: auto; width: auto; margin-top: 12px; }
+      .illus { position: static; display: block; text-align: right; margin-top: 8px; }
+      .mock { margin: 72px 0 20px; }
+      .bar-row { grid-template-columns: 96px 1fr 76px; font-size: 14px; }
+      section { padding: 52px 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap">
+      <a class="brand" href="#top" aria-label="TradeJo home">
+        <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true">
+          <g class="logo-candle" style="color: var(--lm-1)"><line x1="6.5" y1="19" x2="6.5" y2="36" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /><rect x="3" y="23" width="7" height="11" rx="2.5" fill="currentColor" /></g>
+          <g class="logo-candle" style="color: var(--lm-2)"><line x1="15.8" y1="13" x2="15.8" y2="33" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /><rect x="12.3" y="17" width="7" height="13" rx="2.5" fill="currentColor" /></g>
+          <g class="logo-candle" style="color: var(--lm-3)"><line x1="25.1" y1="7" x2="25.1" y2="29" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /><rect x="21.6" y="11" width="7" height="15" rx="2.5" fill="currentColor" /></g>
+          <g class="logo-candle" style="color: var(--lm-4)"><line x1="34.4" y1="2" x2="34.4" y2="25" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /><rect x="30.9" y="5" width="7" height="17" rx="2.5" fill="currentColor" /></g>
+        </svg>
+        <span class="brand-name">Trade<span class="bn-j">J</span><span class="bn-o">o</span></span>
+      </a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="#why">Why</a><a href="#features">Features</a><a href="#how">How it works</a>
+      </nav>
+      <a class="btn btn-dark btn-sm" href="mailto:support@tradejo.in?subject=Early%20access%20to%20TradeJo">Get early access</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <div>
+          <span class="eyebrow">For F&amp;O traders · coming soon</span>
+          <h1>Trade by the <span class="hl">rules.</span></h1>
+          <p class="lead">TradeJo is your own trade analytics app. It checks every trade against the rules you set, journals it from your broker on its own, and shows you exactly what discipline earns you, and what breaking it costs.</p>
+          <div class="cta">
+            <a class="btn btn-dark" href="mailto:support@tradejo.in?subject=Early%20access%20to%20TradeJo">Get early access →</a>
+            <a class="btn btn-line" href="#features">See what it does</a>
+          </div>
+          <p class="fine">No tips, no calls. Your plan, your rules, your data.</p>
+        </div>
+
+        <div class="mock" aria-label="An illustration of the TradeJo app">
+          <div class="card ticket">
+            <div class="t-head">
+              <div><b>NIFTY 22700 CE</b><small>NFO · weekly expiry · lot 65</small></div>
+              <div class="t-ltp"><span>LTP</span><strong>49.65</strong></div>
+            </div>
+            <div class="t-side"><span class="on">Buy</span><span>Sell</span></div>
+            <div class="t-rules">
+              <div class="cap">Stopped by your rules</div>
+              <div class="rule block">⛔ Daily loss limit reached at 10:26</div>
+              <div class="rule block">⛔ 4 lots &gt; this strategy's max of 2</div>
+              <div class="rule warn">⚠ No OI review logged in the last hour</div>
+            </div>
+            <div class="t-go">Buy 4 lots</div>
+          </div>
+          <div class="card float score"><div class="ring" aria-hidden="true"></div><div><small>Rules followed</small><b>This month</b></div></div>
+          <div class="card float journal">
+            <div class="row"><span>09:31 Opening trade</span><span class="tag ok">rules kept</span></div>
+            <div class="row"><span>11:02 Revenge entry</span><span class="tag bad">rule broken</span></div>
+            <div class="row"><span>14:15 Expiry hero</span><span class="tag ok">rules kept</span></div>
+          </div>
+          <span class="illus">Illustration, sample data</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="why">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="kicker">Why TradeJo</div>
+          <h2>Most losses aren't bad analysis. They're broken rules.</h2>
+          <p>You already know your rules. The hard part is following them at 11 am after a loss, with the next candle forming.</p>
+        </div>
+        <div class="pains">
+          <div class="card pain reveal"><div class="emo">😤</div><div class="q">"Just one more to win it back"</div><p>The revenge trade after a stop-loss, bigger than the one before.</p></div>
+          <div class="card pain reveal"><div class="emo">📉</div><div class="q">"I'll average it down"</div><p>Adding to a loser against your own plan, until it's the day's whole loss.</p></div>
+          <div class="card pain reveal"><div class="emo">🔁</div><div class="q">"Ten trades before lunch"</div><p>Overtrading past your limit, where charges quietly eat the profits.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <div class="kicker">What it does</div>
+          <h2>Your rules, checked before every trade.</h2>
+          <p>Built by a trader, for real trading first: every feature here runs on live trades, every day.</p>
+        </div>
+        <div class="features">
+          <div class="card feat reveal"><div class="ico" style="background: var(--bad-bg)">🛡️</div><h3>Rules before the click</h3><p>Daily loss limit, lot caps, trade count, time windows, no averaging. Checked the moment you place an order, not after.</p></div>
+          <div class="card feat reveal"><div class="ico" style="background: var(--ok-bg)">📒</div><h3>A journal that writes itself</h3><p>Trades come in from your broker on their own: entries, exits, charges. You add the why; TradeJo does the rest.</p></div>
+          <div class="card feat reveal"><div class="ico" style="background: var(--yellow-soft)">📊</div><h3>Discipline, measured</h3><p>See P&amp;L from trades that kept your rules against those that broke them. The number that changes habits.</p></div>
+          <div class="card feat reveal"><div class="ico" style="background: var(--violet-bg)">🧭</div><h3>Your playbook, enforced</h3><p>Write each strategy once: its instruments, size, timing and exits. Every trade is tagged to the setup it followed.</p></div>
+          <div class="card feat reveal"><div class="ico" style="background: #e3eefd">🔎</div><h3>OI data, not calls</h3><p>Open-interest changes laid out clearly for your own analysis. TradeJo never tells you what to buy or sell.</p></div>
+          <div class="card feat reveal"><div class="ico" style="background: var(--pill)">💰</div><h3>Capital that adds up</h3><p>Funds, withdrawals, brokerage and taxes in one place, so your real return is never a guess.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="wrap split">
+        <div class="reveal">
+          <div class="sec-head" style="margin-bottom: 26px">
+            <div class="kicker">How it works</div>
+            <h2>Set it once. Trade as usual. Review with facts.</h2>
+          </div>
+          <div class="steps">
+            <div class="card step"><div><b>Write your playbook</b><span>Your strategies and the rules you promise yourself: limits, sizes, timings.</span></div></div>
+            <div class="card step"><div><b>Trade the way you do</b><span>Connect your broker. TradeJo checks each trade and journals it automatically.</span></div></div>
+            <div class="card step"><div><b>Review what rules earned you</b><span>Daily and monthly reports show where discipline paid and where it slipped.</span></div></div>
+          </div>
+        </div>
+        <div class="card chart reveal" aria-label="An illustration of the discipline report">
+          <h3>This month, by discipline</h3>
+          <div class="sub">Illustration, sample data</div>
+          <div class="bars">
+            <div class="bar-row"><span>Rules kept</span><div class="bar"><i style="width: 78%; background: var(--pos)"></i></div><span class="num pos">+₹18,420</span></div>
+            <div class="bar-row"><span>Rules broken</span><div class="bar"><i style="width: 46%; background: var(--neg)"></i></div><span class="num neg">−₹11,260</span></div>
+            <div class="bar-row"><span>Charges</span><div class="bar"><i style="width: 18%; background: var(--lm-2)"></i></div><span class="num neg">−₹2,940</span></div>
+          </div>
+          <div class="note">💡 Skipping just the rule-broken trades would have kept <b>₹11,260</b> more this month.</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="final reveal">
+          <h2>Be the trader who follows the plan.</h2>
+          <p>TradeJo is opening to a small group of traders first. Write to us and we'll let you know when your access is ready.</p>
+          <a class="btn" href="mailto:support@tradejo.in?subject=Early%20access%20to%20TradeJo">Get early access →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-top">
+        <a class="brand" href="#top" aria-label="TradeJo home"><span class="brand-name" style="font-size: 18px">Trade<span class="bn-j">J</span><span class="bn-o">o</span></span></a>
+        <span>Questions? <a href="mailto:support@tradejo.in">support@tradejo.in</a></span>
+        <span>© <span id="yr">2026</span> TradeJo</span>
+      </div>
+      <p class="disclaimer">TradeJo is a trade journaling and analytics tool. It is not a SEBI-registered investment adviser or research analyst and does not give buy, sell or hold recommendations. Open-interest and market data are shown for your own analysis only. Trading in derivatives involves substantial risk of loss; past results do not guarantee future returns.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("yr").textContent = new Date().getFullYear();
+    const io = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: 0.12 }) : null;
+    document.querySelectorAll(".reveal").forEach((el) => (io ? io.observe(el) : el.classList.add("in")));
+  </script>
+</body>
+</html>
